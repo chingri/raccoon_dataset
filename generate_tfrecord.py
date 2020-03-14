@@ -2,10 +2,9 @@
 Usage:
   # From tensorflow/models/
   # Create train data:
-  python generate_tfrecord.py --csv_input=data/train_labels.csv  --output_path=train.record
-
+  python3 generate_tfrecord.py --csv_input=data/train_labels.csv --output_path=data/train.record --image_dir=train
   # Create test data:
-  python generate_tfrecord.py --csv_input=data/test_labels.csv  --output_path=test.record
+  python3 generate_tfrecord.py --csv_input=data/test_labels.csv --output_path=data/test.record --image_dir=test
 """
 from __future__ import division
 from __future__ import print_function
@@ -29,8 +28,10 @@ FLAGS = flags.FLAGS
 
 # TO-DO replace this with label map
 def class_text_to_int(row_label):
-    if row_label == 'raccoon':
+    if row_label == 'chip':
         return 1
+    elif row_label == 'cardreader':
+        return 2
     else:
         None
 
@@ -42,7 +43,7 @@ def split(df, group):
 
 
 def create_tf_example(group, path):
-    with tf.gfile.GFile(os.path.join(path, '{}'.format(group.filename)), 'rb') as fid:
+    with tf.gfile.GFile("images/"+os.path.join(path, '{}'.format(group.filename)), 'rb') as fid:
         encoded_jpg = fid.read()
     encoded_jpg_io = io.BytesIO(encoded_jpg)
     image = Image.open(encoded_jpg_io)
